@@ -16,8 +16,18 @@ services:
         - redis_data:/data  
     web:
         build: .
+        command: bundle exec rails server -b 0.0.0.0
+        volumes:
+            - .:/rails
+        ports:
+            - "3000:3000"
+        depends_on:
+            - db
+            - redis
+        secrets:
+            - rails_master_key
         environment:
-            - RAILS_MASTER_KEY=000de760f69545838c1e6dadd236e84f177c5b00
+            - RAILS_MASTER_KEY_PATH=/run/secrets/rails_master_key
             - DATABASE_URL=postgresql://postgres:password@db:5432/myapp
             - REDIS_URL=redis://redis:6379/0
     sidekiq:
@@ -28,8 +38,10 @@ services:
         depends_on:
             - db
             - redis
+        secrets:
+            - rails_master_key
         environment:
-            - RAILS_MASTER_KEY=000de760f69545838c1e6dadd236e84f177c5b00
+            - RAILS_MASTER_KEY_PATH=/run/secrets/rails_master_key
             - DATABASE_URL=postgresql://postgres:password@db:5432/myapp
             - REDIS_URL=redis://redis:6379/0
     test:
@@ -43,6 +55,10 @@ services:
         environment:
             - DATABASE_URL=postgresql://postgres:password@db:5432/myapp_test
             - REDIS_URL=redis://redis:6379/0
+secrets:
+  rails_master_key:
+    file: ./config/master.key
+    
 volumes:
     postgres13:
     redis_data:

@@ -300,7 +300,7 @@ DEPENDENCIES
   debug
   factory_bot_rails (~> 6.2)
   faker
-  guard
+  guard (~> 2.19)
   guard-livereload
   pg (~> 1.1)
   puma (>= 5.0)
