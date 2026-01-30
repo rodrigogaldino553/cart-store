@@ -8,18 +8,17 @@
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
 
-
 Product.create([
   {
-    name: 'Samsung Galaxy S24 Ultra',
+    name: "Samsung Galaxy S24 Ultra",
     price: 12999.99
   },
   {
-    name: 'iPhone 15 Pro Max',
+    name: "iPhone 15 Pro Max",
     price: 14999.99
   },
   {
-    name: 'Xiamo Mi 27 Pro Plus Master Ultra',
+    name: "Xiamo Mi 27 Pro Plus Master Ultra",
     price: 999.99
   }
 ])

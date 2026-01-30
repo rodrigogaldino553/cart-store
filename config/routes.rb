@@ -1,7 +1,7 @@
-require 'sidekiq/web'
+require "sidekiq/web"
 
 Rails.application.routes.draw do
-  mount Sidekiq::Web => '/sidekiq'
+  mount Sidekiq::Web => "/sidekiq"
 
   namespace :api do
     namespace :v1 do
@@ -15,6 +15,6 @@ Rails.application.routes.draw do
     end
   end
 
-  get "up" => "rails/health#show", as: :rails_health_check
+  get "up" => "rails/health#show", :as => :rails_health_check
   root "rails/health#show"
 end
