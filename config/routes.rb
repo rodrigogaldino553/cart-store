@@ -6,9 +6,10 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :products
-      resource :cart, only: [:create, :show, :update, :destroy] do
+      resource :cart, only: [:create, :show] do
         member do
-          post :add_item
+          put :add_item, to: "carts#update"
+          delete "/:product_id", to: "carts#destroy"
         end
       end
     end

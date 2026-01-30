@@ -37,14 +37,16 @@ module Api
       end
     
       def destroy
+        return render json: { errors: ["Your cart is empty"] }, status: :not_found unless @cart.cart_items.exists?
+        
         cart_item = @cart.cart_items.find_by(product_id: params[:product_id])
         if cart_item
           cart_item.destroy
-          render_cart(@cart) && return unless @cart.cart_items.empty?
+          return render_cart(@cart) unless @cart.cart_items.empty?
     
           render json: { message: "Product removed, now your cart is empty" }, status: :ok
         else
-          render json: { errors: ["Product not found in your cart"] }, status: :not_found
+          render json: { errors: ["The product was not found in your cart"] }, status: :not_found
         end
       end
     
