@@ -16,10 +16,11 @@ gem "guard-livereload", require: false
 
 
 group :development, :test do
+  gem "bullet", "~> 7.0"
   gem "debug", platforms: %i[ mri windows ]
   gem "factory_bot_rails", "~> 6.2"
-  gem "rspec-rails", "~> 6.1.0"
   gem "faker"
+  gem "rspec-rails", "~> 6.1.0"
 end
 
 group :development do
