@@ -10,22 +10,24 @@ module Api
       end
 
       def create
-        new_cart if @cart.nil?
-        product = Product.find(params[:product_id])
-        cart_item = @cart.cart_items.find_or_initialize_by(product_id: product.id)
-        cart_item.quantity += params.fetch(:quantity, 1).to_i
-
-        if cart_item.save
-          render_cart(@cart)
+        new_cart_initialize if @cart.nil?
+        product = Product.find(cart_params[:product_id])
+        if @cart.cart_items.where(product: product).exists?
+          render json: {errors: ["Product already present in your cart"]}, status: :conflict
         else
-          render json: {errors: cart_item.errors.full_messages}, status: :unprocessable_entity
+          cart_item = @cart.cart_items.new(product: product, quantity: cart_params.fetch(:quantity, 1).to_i)
+          if cart_item.save
+            render_cart(@cart)
+          else
+            render json: {errors: cart_item.errors.full_messages}, status: :unprocessable_entity
+          end
         end
       end
 
       def update
         cart_item = @cart.cart_items.find_by(product_id: cart_params[:product_id])
         if cart_item
-          cart_item.quantity += params.fetch(:quantity, 0).to_i
+          cart_item.quantity += cart_params.fetch(:quantity, 0).to_i
           if cart_item.save
             render_cart(@cart)
           else
@@ -39,7 +41,7 @@ module Api
       def destroy
         return render json: {errors: ["Your cart is empty"]}, status: :not_found unless @cart.cart_items.exists?
 
-        cart_item = @cart.cart_items.find_by(product_id: params[:product_id])
+        cart_item = @cart.cart_items.find_by(product_id: cart_params[:product_id])
         if cart_item
           cart_item.destroy
           return render_cart(@cart) unless @cart.cart_items.empty?
@@ -55,8 +57,12 @@ module Api
       def set_cart
         @cart = Cart.find_by(id: session[:cart_id])
       end
+      
+      def cart_params
+        params.require(:cart).permit(:product_id, :quantity)
+      end
 
-      def new_cart
+      def new_cart_initialize
         @cart = Cart.create(total_price: 0)
         session[:cart_id] = @cart.id
       end
