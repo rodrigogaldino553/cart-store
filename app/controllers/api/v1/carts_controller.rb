@@ -15,7 +15,10 @@ module Api
         if @cart.cart_items.where(product: product).exists?
           render json: {errors: ["Product already present in your cart"]}, status: :conflict
         else
-          cart_item = @cart.cart_items.new(product: product, quantity: cart_params.fetch(:quantity, 1).to_i)
+          cart_item = @cart.cart_items.new(
+            product: product,
+            quantity: cart_params[:quantity].to_i
+          )
           if cart_item.save
             render_cart(@cart)
           else
@@ -41,7 +44,7 @@ module Api
       def destroy
         return render json: {errors: ["Your cart is empty"]}, status: :not_found unless @cart.cart_items.exists?
 
-        cart_item = @cart.cart_items.find_by(product_id: cart_params[:product_id])
+        cart_item = @cart.cart_items.find_by(product_id: params[:product_id])
         if cart_item
           cart_item.destroy
           return render_cart(@cart) unless @cart.cart_items.empty?
