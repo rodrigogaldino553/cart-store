@@ -1,6 +1,6 @@
 class CartSerializer < ActiveModel::Serializer
   attributes :id, :products, :total_price
-  
+
   def products
     object.cart_items.map do |item|
       {
