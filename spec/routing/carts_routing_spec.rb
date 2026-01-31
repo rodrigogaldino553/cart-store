@@ -1,17 +1,17 @@
 require "rails_helper"
 
-RSpec.describe CartsController, type: :routing do
+RSpec.describe Api::V1::CartsController, type: :routing do
   describe "routes" do
     it "routes to #show" do
-      expect(get: "/cart").to route_to("carts#show")
+      expect(get: "/api/v1/cart").to route_to("api/v1/carts#show")
     end
 
     it "routes to #create" do
-      pending "#TODO: Escreva um teste para validar a criação de um carrinho #{__FILE__}"
+      expect(post: "/api/v1/cart").to route_to("api/v1/carts#create")
     end
 
-    it "routes to #add_item via POST" do
-      expect(post: "/cart/add_item").to route_to("carts#add_item")
+    it "routes to #add_item via PUT" do
+      expect(put: "/api/v1/cart/add_item").to route_to("api/v1/carts#update")
     end
   end
 end

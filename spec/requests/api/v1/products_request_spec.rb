@@ -1,6 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Api::V1::Products", type: :request do
+  let(:headers) { {"ACCEPT" => "application/json", "CONTENT_TYPE" => "application/json"} }
   let(:valid_attributes) {
     {
       name: "A product",
@@ -15,9 +16,7 @@ RSpec.describe "Api::V1::Products", type: :request do
     }
   }
 
-  let(:valid_headers) {
-    {}
-  }
+  let(:valid_headers) { {"ACCEPT" => "application/json", "CONTENT_TYPE" => "application/json"} }
 
   describe "GET /api/v1/products" do
     it "renders a successful response" do

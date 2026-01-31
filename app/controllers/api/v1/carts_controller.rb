@@ -64,15 +64,15 @@ module Api
       def set_cart
         @cart = Cart.find_by(id: session[:cart_id])
       end
-      
+
       def cart_params
         params.require(:cart).permit(:product_id, :quantity)
       end
-      
+
       def check_if_abandoned
-        return unless @cart && @cart.abandoned?
-        
-        render json: { errors: ["Cart has been abandoned"] }, status: :gone
+        return unless @cart&.abandoned?
+
+        render json: {errors: ["Cart has been abandoned"]}, status: :gone
       end
 
       def new_cart_initialize
