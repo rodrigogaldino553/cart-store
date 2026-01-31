@@ -2,6 +2,7 @@ module Api
   module V1
     class CartsController < ApplicationController
       before_action :set_cart, only: %i[create update show destroy]
+      before_action :check_if_abandoned, only: %i[update show destroy]
 
       def show
         return render json: {errors: ["Cart not found"]}, status: :not_found if @cart.nil?
@@ -20,6 +21,7 @@ module Api
             quantity: cart_params[:quantity].to_i
           )
           if cart_item.save
+            @cart.touch_interaction
             render_cart(@cart)
           else
             render json: {errors: cart_item.errors.full_messages}, status: :unprocessable_entity
@@ -28,10 +30,11 @@ module Api
       end
 
       def update
-        cart_item = @cart.cart_items.find_by(product_id: cart_params[:product_id])
+        cart_item = @cart&.cart_items&.find_by(product_id: cart_params[:product_id])
         if cart_item
           cart_item.quantity += cart_params.fetch(:quantity, 0).to_i
           if cart_item.save
+            @cart.touch_interaction
             render_cart(@cart)
           else
             render json: {errors: cart_item.errors.full_messages}, status: :unprocessable_entity
@@ -46,6 +49,7 @@ module Api
 
         cart_item = @cart.cart_items.find_by(product_id: params[:product_id])
         if cart_item
+          @cart.touch_interaction
           cart_item.destroy
           return render_cart(@cart) unless @cart.cart_items.empty?
 
@@ -63,6 +67,12 @@ module Api
       
       def cart_params
         params.require(:cart).permit(:product_id, :quantity)
+      end
+      
+      def check_if_abandoned
+        return unless @cart && @cart.abandoned?
+        
+        render json: { errors: ["Cart has been abandoned"] }, status: :gone
       end
 
       def new_cart_initialize
