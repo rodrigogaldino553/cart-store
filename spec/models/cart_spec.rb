@@ -1,6 +1,9 @@
 require "rails_helper"
 
 RSpec.describe Cart, type: :model do
+  let(:cart) { Cart.create!(total_price: 0) }
+  let(:product) { Product.create!(name: "test product", price: 10) }
+
   context "when validating" do
     it "validates numericality of total_price" do
       cart = described_class.new(total_price: -1)
@@ -9,7 +12,13 @@ RSpec.describe Cart, type: :model do
     end
   end
 
-  describe "mark_as_abandoned" do
+  describe "#update_cart_total_price" do
+    it "updates the total price of the cart" do
+      cart.cart_items.create!(product: product, quantity: 2)
+      cart.touch
+      expect(cart.total_price).to eq(20)
+    end
+    describe "mark_as_abandoned" do
     let(:shopping_cart) { create(:shopping_cart) }
 
     it "marks the shopping cart as abandoned if inactive for a certain time" do

@@ -23,7 +23,7 @@ module Api
       end
 
       def update
-        cart_item = @cart.cart_items.find_by(product_id: params[:product_id])
+        cart_item = @cart.cart_items.find_by(product_id: cart_params[:product_id])
         if cart_item
           cart_item.quantity += params.fetch(:quantity, 0).to_i
           if cart_item.save
