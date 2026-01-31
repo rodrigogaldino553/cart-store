@@ -22,7 +22,7 @@ module Api
           )
           if cart_item.save
             @cart.touch_interaction
-            render_cart(@cart)
+            render json: @cart, status: :created
           else
             render json: {errors: cart_item.errors.full_messages}, status: :unprocessable_entity
           end
@@ -35,7 +35,7 @@ module Api
           cart_item.quantity += cart_params.fetch(:quantity, 0).to_i
           if cart_item.save
             @cart.touch_interaction
-            render_cart(@cart)
+            render json: @cart, status: :ok
           else
             render json: {errors: cart_item.errors.full_messages}, status: :unprocessable_entity
           end
@@ -51,7 +51,7 @@ module Api
         if cart_item
           @cart.touch_interaction
           cart_item.destroy
-          return render_cart(@cart) unless @cart.cart_items.empty?
+          render json: @cart, status: :ok unless @cart.cart_items.empty?
 
           render json: {message: "Product removed, now your cart is empty"}, status: :ok
         else
