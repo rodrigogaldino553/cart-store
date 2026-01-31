@@ -68,7 +68,7 @@ O projeto pode ser facilmente executado usando Docker Compose, que irá configur
 3.  **Executar migrações no contêiner:**
     Após o primeiro `docker-compose up`, você precisará executar as migrações do banco de dados no contêiner da aplicação:
     ```bash
-    docker-compose exec web rails db:create db:migrate
+    docker-compose exec web bin/rails db:create db:migrate
     ```
 
 ## Documentação da API
@@ -83,8 +83,10 @@ Adiciona um produto ao carrinho. Se o carrinho não existir na sessão, um novo 
 *   **Payload (JSON):**
     ```json
     {
-      "product_id": 345,
-      "quantity": 2
+      "cart": {
+        "product_id": 345,
+        "quantity": 2
+      }
     }
     ```
 *   **Response (JSON):**
@@ -141,8 +143,10 @@ Altera a quantidade de um produto específico que já existe no carrinho.
 *   **Payload (JSON):**
     ```json
     {
-      "product_id": 1230,
-      "quantity": 1
+      "cart": {
+        "product_id": 1230,
+        "quantity": 1
+      }
     }
     ```
 *   **Response (JSON):**
@@ -199,6 +203,12 @@ Se estiver usando Docker Compose:
 ```bash
 docker-compose exec web bundle exec rspec
 ```
+
+**Executar migrações no contêiner:**
+  Após o primeiro `docker-compose up`, você precisará executar as migrações do banco de dados no contêiner da aplicação:
+  ```bash
+  docker-compose exec web bin/rails db:create db:migrate RAILS_ENV=test
+  ```
 
 ## Jobs de Carrinhos Abandonados
 
